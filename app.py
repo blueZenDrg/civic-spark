@@ -1,0 +1,81 @@
+from flask import Flask, render_template, request, jsonify
+from civic_spark_app import CivicSparkApp
+from html_generator import get_creative_design, generate_html_report
+import json
+import os
+import dotenv
+
+dotenv.load_dotenv()    
+
+app = Flask(__name__)
+api_key = os.environ.get("GEMINI_API_KEY")
+civic_app = CivicSparkApp(api_key)
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/start_process', methods=['POST'])
+def start_process():
+    data = request.json
+    idea = civic_app.input_idea(data['description'], data['country'], data['city'], data['user_age'])
+    questions = civic_app.get_refining_questions(idea)
+    return jsonify({'questions': questions})
+
+@app.route('/refine_idea', methods=['POST'])
+def refine_idea():
+    data = request.json
+    idea = civic_app.ideas[-1]  # Get the last idea
+    civic_app.add_refined_details(idea, data['answers'])
+    return jsonify({'message': 'Idea refined successfully'})
+
+@app.route('/get_global_examples', methods=['POST'])
+def get_global_examples():
+    idea = civic_app.ideas[-1]
+    civic_app.provide_global_examples(idea)
+    return jsonify({'examples': idea.global_examples})
+
+@app.route('/assess_feasibility', methods=['POST'])
+def assess_feasibility():
+    idea = civic_app.ideas[-1]
+    civic_app.assess_local_feasibility(idea)
+    return jsonify({'feasibility': idea.local_feasibility})
+
+@app.route('/get_breakthroughs', methods=['POST'])
+def get_breakthroughs():
+    idea = civic_app.ideas[-1]
+    civic_app.fetch_relevant_breakthroughs(idea)
+    return jsonify({'breakthroughs': idea.relevant_breakthroughs})
+
+@app.route('/get_full_solution', methods=['POST'])
+def get_full_solution():
+    idea = civic_app.ideas[-1]
+    civic_app.provide_full_solution(idea)
+    return jsonify({'solution': idea.full_solution})
+
+@app.route('/generate_report', methods=['POST'])
+def generate_report():
+    idea = civic_app.ideas[-1]
+    idea_data = {
+        'description': idea.description,
+        'city': idea.city,
+        'country': idea.country,
+        'refined_details': idea.refined_details,
+        'global_examples': idea.global_examples,
+        'local_feasibility': idea.local_feasibility,
+        'relevant_breakthroughs': idea.relevant_breakthroughs,
+        'full_solution': idea.full_solution
+    }
+    try:
+        design_suggestions = get_creative_design(idea_data, api_key)
+        # image_links = json.loads(get_image_links(design_suggestions['image_prompts'], api_key))
+        html_report = generate_html_report(design_suggestions, api_key)
+        return jsonify({'success': True, 'html_report': html_report})
+    except Exception as e:
+        print(f"Error generating report: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)})
+
+if __name__ == '__main__':
+    app.run(debug=True)
