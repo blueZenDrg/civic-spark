@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicSpark App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div id="app">
+        <h1>CivicSpark App</h1>
+        <div id="chat-container">
+            <div id="chat-messages"></div>
+            <div id="typing-indicator" class="hidden">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+            <div id="loading-indicator" class="hidden">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Processing your idea...</div>
+            </div>
+            <div id="user-input">
+                <input type="text" id="user-message" placeholder="Type your message here...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+        <div id="pdf-generation">
+            <button id="generate-report-button" class="hidden">Generate Report</button>
+        </div>
+        
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
