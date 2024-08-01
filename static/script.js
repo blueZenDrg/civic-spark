@@ -11,6 +11,15 @@ let refiningQuestions = [];
 let currentQuestionIndex = 0;
 let refiningAnswers = [];
 
+document.addEventListener('DOMContentLoaded', () => {
+    const netflixIntro = document.querySelector('.netflix-intro');
+    setTimeout(() => {
+        netflixIntro.style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+    }, 4000);
+});
+
+
 function addMessage(message, isUser = false) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', isUser ? 'user-message' : 'ai-message');
@@ -18,6 +27,8 @@ function addMessage(message, isUser = false) {
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
+
 
 function processUserInput(input) {
     addMessage(input, true);
@@ -130,28 +141,19 @@ async function getFullSolution() {
 }
 
 generateReportButton.addEventListener('click', async () => {
-    showLoadingIndicator('Generating HTML report...');
+    showLoadingIndicator('Generating DOCX report...');
     const response = await fetch('/generate_report', { method: 'POST' });
     const data = await response.json();
     hideLoadingIndicator();
     if (data.success) {
-        // Create a Blob with the HTML content
-        const blob = new Blob([data.html_report], { type: 'text/html' });
-        // Create a temporary URL for the Blob
-        const url = window.URL.createObjectURL(blob);
-        // Create a temporary anchor element
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'civic_idea_report.html';
-        // Trigger the download
-        document.body.appendChild(a);
-        a.click();
-        // Clean up
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        addMessage("HTML report generated and downloaded successfully.");
+        addMessage("DOCX report generated successfully. Click to download.");
+        const downloadLink = document.createElement('a');
+        downloadLink.href = `/download_report/${data.filename}`;
+        downloadLink.textContent = 'Download Report';
+        downloadLink.className = 'download-link';
+        chatMessages.appendChild(downloadLink);
     } else {
-        addMessage("There was an error generating the HTML report. Please try again.");
+        addMessage("There was an error generating the DOCX report. Please try again.");
     }
 });
 

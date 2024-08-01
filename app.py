@@ -1,15 +1,15 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 from civic_spark_app import CivicSparkApp
-from html_generator import get_creative_design, generate_html_report
-import json
+from html_report import generate_html_report
 import os
 import dotenv
 
-dotenv.load_dotenv()    
+dotenv.load_dotenv()
 
 app = Flask(__name__)
 api_key = os.environ.get("GEMINI_API_KEY")
 civic_app = CivicSparkApp(api_key)
+
 
 
 @app.route('/')
@@ -69,13 +69,21 @@ def generate_report():
         'full_solution': idea.full_solution
     }
     try:
-        design_suggestions = get_creative_design(idea_data, api_key)
-        # image_links = json.loads(get_image_links(design_suggestions['image_prompts'], api_key))
-        html_report = generate_html_report(design_suggestions, api_key)
-        return jsonify({'success': True, 'html_report': html_report})
+        html_content = generate_html_report(idea_data, api_key)
+        filename = f"report_{idea.city}_{idea.country}.html"
+        with open(filename, 'w') as f:
+            f.write(html_content)
+        return jsonify({'success': True, 'filename': filename})
     except Exception as e:
         print(f"Error generating report: {str(e)}")
         return jsonify({'success': False, 'error': str(e)})
+
+
+
+@app.route('/download_report/<filename>')
+def download_report(filename):
+    return send_file(filename, as_attachment=True)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

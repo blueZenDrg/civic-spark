@@ -45,6 +45,14 @@ class CivicSparkApp:
             value = value.strip()
             result[key] = value
         return result
+    
+    def extract_response_text(self, response):
+        if isinstance(response, str):
+            return response
+        elif hasattr(response, 'parts') and len(response.parts) > 0:
+            return response.parts[0].text
+        else:
+            return str(response)
 
     def get_refining_questions(self, idea: Idea) -> List[str]:
         age_group = "young" if idea.user_age < 18 else "adult"
@@ -64,7 +72,16 @@ class CivicSparkApp:
         """
         
         response = self.model.generate_content(prompt)
-        return self.extract_list_from_response(response.text)
+        
+        # Handle different response structures
+        if isinstance(response, str):
+            response_text = response
+        elif hasattr(response, 'parts') and len(response.parts) > 0:
+            response_text = response.parts[0].text
+        else:
+            response_text = str(response)
+        
+        return self.extract_list_from_response(response_text)
 
     def add_refined_details(self, idea: Idea, answers: List[str]) -> None:
         idea.refined_details = answers
@@ -86,7 +103,8 @@ class CivicSparkApp:
         """
         
         response = self.model.generate_content(prompt)
-        idea.global_examples = self.extract_list_from_response(response.text)
+        response_text = self.extract_response_text(response)
+        idea.global_examples = self.extract_list_from_response(response_text)
 
     def assess_local_feasibility(self, idea: Idea) -> None:
         prompt = f"""
@@ -117,7 +135,8 @@ class CivicSparkApp:
         """
         
         response = self.model.generate_content(prompt)
-        idea.local_feasibility = self.extract_dict_from_response(response.text)
+        response_text = self.extract_response_text(response)
+        idea.local_feasibility = self.extract_dict_from_response(response_text)
 
     def fetch_relevant_breakthroughs(self, idea: Idea) -> None:
         prompt = f"""
@@ -132,7 +151,8 @@ class CivicSparkApp:
         """
 
         response = self.model.generate_content(prompt)
-        idea.relevant_breakthroughs = self.extract_list_from_response(response.text)
+        response_text = self.extract_response_text(response)
+        idea.relevant_breakthroughs = self.extract_list_from_response(response_text)
 
     def provide_full_solution(self, idea: Idea) -> None:
         prompt = f"""
@@ -164,7 +184,7 @@ class CivicSparkApp:
         """
 
         response = self.model.generate_content(prompt)
-        idea.full_solution = response.text
+        idea.full_solution = self.extract_response_text(response)
 
     def process_idea(self, description: str, country: str, city: str, user_age: int) -> Idea:
         idea = self.input_idea(description, country, city, user_age)

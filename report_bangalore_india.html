@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civic Issue - Bangalore, India</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            background-color: #141414;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1, h2, h3, p {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .issue-details {
+            background-color: #181818;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .issue-details:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .map-container {
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .global-examples {
+            margin-bottom: 20px;
+        }
+
+        .global-examples h3 {
+            margin-top: 20px;
+        }
+
+        .global-example {
+            background-color: #181818;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .global-example:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .solution {
+            background-color: #181818;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .solution:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .solution h2 {
+            color: #e50914;
+        }
+
+        .solution-details {
+            margin-top: 10px;
+        }
+
+        .footer {
+            background-color: #222;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Civic Issue in Bangalore, India</h1>
+
+        <div class="issue-details">
+            <h2>Description</h2>
+            <p>The garbage trucks in my locality transport garbage openly without any shelter, it stinks and I think it is bad for my health.</p>
+            <h2>City</h2>
+            <p>Bangalore</p>
+            <h2>Country</h2>
+            <p>India</p>
+            <h3>Refined Details</h3>
+            <ul>
+                <li>I am not so sure you can search that online</li>
+                <li>I think if it's good then whole of india</li>
+                <li>you say that</li>
+                <li>idk</li>
+            </ul>
+        </div>
+
+        <div class="map-container" id="map"></div>
+
+        <div class="global-examples">
+            <h2>Global Examples</h2>
+            <div class="global-example">
+                <h3>Example 1: Mexico City's 'Conejos' (Rabbits)</h3>
+                <p>Mexico City, facing similar challenges with waste management and air quality, implemented a program called 'Conejos'. These are specialized, enclosed garbage trucks that minimize odor and dust emissions. The trucks also have a built-in system for separating recyclable materials. </p>
+                <h4>Relevance to Bangalore:</h4>
+                <p>This initiative directly addresses the concern of open garbage transport and its associated health risks. Implementing similar 'Conejos' trucks in Bangalore could significantly improve sanitation and reduce air pollution, aligning with India's broader goals of sustainable waste management.</p>
+            </div>
+            <div class="global-example">
+                <h3>Example 2: Brazil's 'Lixo Zero' (Zero Waste) Program</h3>
+                <p>Brazil's 'Lixo Zero' program focuses on promoting waste reduction, reuse, and recycling at the source. It involves community-based initiatives, improved waste collection and sorting systems, and stricter regulations on waste disposal. </p>
+                <h4>Relevance to Bangalore:</h4>
+                <p>While not directly focused on enclosed garbage trucks, this program emphasizes a holistic approach to waste management. Bangalore could benefit from similar community engagement and investment in infrastructure to support waste reduction and proper disposal. This approach would complement the use of enclosed trucks, creating a more sustainable system.</p>
+            </div>
+            <div class="global-example">
+                <h3>Example 3: South Africa's 'Waste-to-Energy' Facilities</h3>
+                <p>South Africa has invested in 'Waste-to-Energy' facilities, which utilize advanced technology to convert municipal solid waste into electricity. This not only reduces the amount of waste going to landfills but also provides a clean energy source. </p>
+                <h4>Relevance to Bangalore:</h4>
+                <p>India, with its rapidly growing population and urban centers, could explore similar 'Waste-to-Energy' solutions. This would provide a long-term solution to the challenge of waste disposal and contribute to the country's clean energy goals. The adoption of enclosed garbage trucks could be a crucial component of such a system to ensure efficient and hygienic waste collection.</p>
+            </div>
+        </div>
+
+        <div class="solution">
+            <h2>Potential Solutions</h2>
+            <p class="solution-details">The issue of open garbage trucks in Bangalore, causing odor and health concerns, can be tackled by implementing a multi-pronged approach inspired by global examples and leveraging recent breakthroughs. While "Conejos" trucks from Mexico City provide a direct solution, implementing such a system nationwide might be expensive and require significant infrastructure changes. Instead, we can focus on a more holistic approach like Brazil's "Lixo Zero" program, promoting waste reduction and recycling at the source. This can be achieved by promoting composting initiatives in schools and communities, encouraging the use of biodegradable packaging (as explored in the "Biodegradable and Compostable Packaging" research), and organizing awareness campaigns on responsible waste disposal.  Furthermore, integrating "Smart Waste Management Systems" (as outlined in the relevant research) can optimize garbage truck routes, minimizing exposure time in residential areas and reducing odor. By investing in "Waste-to-Energy" technologies, similar to South Africa, we can convert waste into usable energy, further reducing the volume needing transportation and potentially eliminating the need for open garbage trucks. This solution, though ambitious, offers a sustainable and impactful way to address the problem while promoting environmental consciousness and engaging the community in a collaborative effort towards a cleaner and healthier Bangalore.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Leaflet map initialization
+        var map = L.map('map').setView([12.9716, 77.5946], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Marker for Bangalore
+        var marker = L.marker([12.9716, 77.5946]).addTo(map);
+        marker.bindPopup("<b>Bangalore</b>").openPopup();
+    </script>
+
+    <div class="footer">
+        <p>&copy; 2023 Civic Issues Tracker</p>
+    </div>
+
+</body>
+</html>
