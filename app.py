@@ -27,7 +27,7 @@ def start_process():
 @app.route('/refine_idea', methods=['POST'])
 def refine_idea():
     data = request.json
-    idea = civic_app.ideas[-1]  # Get the last idea
+    idea = civic_app.ideas[-1]
     civic_app.add_refined_details(idea, data['answers'])
     return jsonify({'message': 'Idea refined successfully'})
 

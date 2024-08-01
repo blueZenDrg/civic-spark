@@ -73,7 +73,6 @@ class CivicSparkApp:
         
         response = self.model.generate_content(prompt)
         
-        # Handle different response structures
         if isinstance(response, str):
             response_text = response
         elif hasattr(response, 'parts') and len(response.parts) > 0:

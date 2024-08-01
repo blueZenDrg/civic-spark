@@ -20,16 +20,13 @@ def generate_html_report(data, api_key):
     """
     response = model.generate_content(prompt)
     
-    # Extract the HTML content from the response
     html_content = response.candidates[0].content.parts[0].text
     
-    # Remove the markdown code block indicators if present
     html_content = html_content.replace("```html\n", "").replace("\n```", "")
     
     return html_content
 
 
-# Keep the extract_text_from_response function as a fallback
 def extract_text_from_response(response):
     if hasattr(response, 'text'):
         return response.text
